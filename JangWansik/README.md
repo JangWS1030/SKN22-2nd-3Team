@@ -20,14 +20,23 @@
 3.  **심층 원인 분석**: 레이더 차트와 상세 리포트를 통해 이탈 위험 요인(Risk Factor) 시각화
 4.  **비즈니스 전략 가이드**: 예측된 위험도(안전/주의/위험)에 따른 구체적인 마케팅/서비스 개선 전략 제안
 
-## 📂 데이터셋 설명 (Data Description)
-본 프로젝트는 Spotify 사용자 데이터를 활용하였으며, 주요 컬럼은 다음과 같습니다.
+## 📂 데이터셋 설명 (Data Dictionary)
+이 데이터셋은 Spotify 사용자의 인구통계 정보, 이용 행태, 구독 정보 등을 포함하며, **이탈 여부(`is_churned`)**를 예측하는 것이 핵심 목표입니다.
 
-* **Target**: `is_churned` (0: 유지, 1: 이탈)
-* **User Info**: `age`, `gender`, `country`
-* **Subscription**: `subscription_type` (Free, Premium, Family, Student)
-* **Behavior**: `listening_time`, `songs_played_per_day`, `skip_rate`, `ads_listened_per_week`
-* **Context**: `device_type`, `offline_listening`
+| 구분 | 컬럼명 (Feature) | 설명 | 데이터 타입 | 비고 |
+| :--- | :--- | :--- | :--- | :--- |
+| **식별자** | `user_id` | 사용자 고유 ID | String | 모델 학습 시 제외 |
+| **유저 정보** | `gender` | 성별 (Male, Female, Other) | Categorical | |
+| | `age` | 나이 | Numeric | |
+| | `country` | 국가 / 지역 | Categorical | |
+| **구독 정보** | `subscription_type` | 구독 요금제 유형 | Categorical | Free, Premium, Family, Student |
+| **활동성** | `listening_time` | 하루 평균 청취 시간 (분) | Numeric | 서비스 몰입도 지표 |
+| | `songs_played_per_day`| 하루 재생 곡 수 | Numeric | 활동량 지표 |
+| | `device_type` | 주 사용 기기 | Categorical | Mobile, Desktop, Web |
+| | `offline_listening` | 오프라인 모드 사용 여부 | Binary | 1: 사용, 0: 미사용 (Premium 기능) |
+| **만족도/부정** | `skip_rate` | 노래 스킵 비율 (0.0 ~ 1.0) | Numeric | 높을수록 불만족 가능성 높음 |
+| | `ads_listened_per_week`| 주간 광고 청취 수 | Numeric | Free 유저의 피로도 측정 지표 |
+| **타겟(Target)**| `is_churned` | **이탈 여부** | Binary | **0: 유지 (Active)**<br>**1: 이탈 (Churned)** |
 
 ## 🛠 기술 스택 (Tech Stack)
 * **Language**: Python 3.9+
