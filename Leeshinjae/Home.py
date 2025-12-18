@@ -10,7 +10,6 @@ st.set_page_config(
 # 2. 사용자 정의 CSS
 st.markdown("""
 <style>
-/* 배경 및 기본 텍스트 설정 */
 html, body, [data-testid="stAppViewContainer"] {
     background-color: #000000 !important;
     color: #ffffff !important;
@@ -43,20 +42,6 @@ html, body, [data-testid="stAppViewContainer"] {
     line-height: 1.2;
 }
 
-/* 버튼 스타일: 중앙 정렬을 위해 width 100% 설정 */
-div.stButton > button:first-child {
-    background:#7B3FE4; 
-    color:white;
-    border:none;
-    border-radius:8px;
-    padding:16px 28px;
-    font-size:18px;
-    font-weight:600;
-    cursor:pointer;
-    width: 100%; /* 컬럼 내에서 꽉 차게 설정 */
-    margin-top: 20px;
-}
-
 .description {
     color: #ffffff;
     text-align: center;
@@ -66,29 +51,40 @@ div.stButton > button:first-child {
     line-height: 1.6;
 }
 
-/* 메트릭 박스 스타일 */
-.metric {
+/* 메트릭 버튼 스타일 수정 */
+div[data-testid="stButton"] > button {
     background-color: #111111;
     border: 1px solid #1DB954;
     border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    height: 120px;
+    width: 150%;
+    height: 160px; /* 고정 높이로 동일한 크기 유지 */
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    padding: 20px;
+    white-space: pre-line; /* 줄바꿈(\n) 인식 */
+    transition: all 0.3s ease;
+    line-height: 1.4;
 }
-.metric-title {
-    font-size: 24px;
-    color: #1DB954;
-    font-weight: 700;
-    margin-bottom: 6px;
+
+/* 버튼 호버 효과 */
+div[data-testid="stButton"] > button:hover {
+    background-color: #1DB954;
+    color: black;
+    border-color: #1DB954;
 }
-.metric-desc {
-    font-size: 16px;
-    color: #ffffff;
+
+/* 버튼 내 텍스트 스타일 강제 적용 (Streamlit 기본 스타일 덮어쓰기) */
+div[data-testid="stButton"] > button p {
+    font-size: 20px !important; /* 설명 글자 크기 */
     font-weight: 500;
 }
+
+/* 첫 번째 줄(Title)만 크게 만들기 위한 트릭 (선택 사항) */
+/* 만약 타이틀만 따로 크게 하고 싶다면 아래와 같이 텍스트 구성을 조정합니다. */
 </style>
 """, unsafe_allow_html=True)
 
@@ -97,18 +93,6 @@ st.markdown('<div class="title">🎧 Spotify Customer Analytics 🎵</div>', uns
 st.markdown('<div class="headline-white">가입 고객</div>', unsafe_allow_html=True)
 st.markdown('<div class="headline-green">이탈 예측</div>', unsafe_allow_html=True)
 
-# --- 버튼 중앙 배치 영역 ---
-# [2, 1, 2] 비율로 컬럼을 나누어 가운데(1)에 버튼 배치
-col1, col_center, col2 = st.columns([4, 1, 3])
-
-with col_center:
-    if st.button("예측하기 →", key="guide_btn"):
-        # ✅ 경로 에러 해결: 반드시 'pages/파일명.py' 형식을 사용해야 합니다.
-        # 파일이 실제 'pages' 폴더 안에 있는지 꼭 확인하세요!
-        st.switch_page("pages/ChurnCheck.py") 
-# -------------------------
-
-# 설명 텍스트
 st.markdown("""
 <div class="description">
 머신러닝과 딥러닝을 활용한 Spotify 고객 이탈 예측 모델 구축 및 배포 프로젝트입니다.<br>
@@ -116,23 +100,25 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 메트릭 박스: 1행 4열
-cols = st.columns(4)
+# 메트릭 박스 구성
+cols = st.columns(5)
 metrics = [
-    {"title": "ML/DL", "desc": "모델 활용"},
-    {"title": "~95%+", "desc": "예측 정확도"},
-    {"title": "4", "desc": "파이프라인 단계"},
-    {"title": "Real-time", "desc": "배포 환경"}
+    {"title": "4", "desc": "Pipeline step", "page": "pages/pipeline.py"},
+    {"title": "6", "desc": "Key  Features", "page": "pages/Key_features.py"},
+    {"title": "ML/DL", "desc": "예측모델  설정", "page": "pages/model_comparison.py"},
+    {"title": "+- 82%", "desc": "이탈  예측하기", "page": "pages/ChurnCheck.py"},
+    {"title": "Real-time", "desc": "이탈  대응단계", "page": "pages/business_strategy.py"}
 ]
 
 for col, m in zip(cols, metrics):
     with col:
-        st.markdown(f"""
-        <div class="metric">
-            <div class="metric-title">{m['title']}</div>
-            <div class="metric-desc">{m['desc']}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        # HTML 대신 줄바꿈(\n)을 사용하여 텍스트 전달
+        # 타이틀을 강조하고 싶을 경우 이모지 등을 섞어 시각적 구분 가능
+        button_text = f"{m['title']}\n\n\n\n\n\n{m['desc']}"
+        clicked = st.button(button_text, key=f"btn_{m['title']}")
+        
+        if clicked:
+            st.switch_page(m["page"])
 
 # 푸터
 st.markdown("<br><br>", unsafe_allow_html=True)
