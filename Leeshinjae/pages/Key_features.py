@@ -1,7 +1,8 @@
 import streamlit as st
+import plotly.graph_objects as go
 
 # 페이지 설정
-st.set_page_config(page_title="이탈 예측 주요 피처", page_icon="📊", layout="wide")
+st.set_page_config(page_title="Spotify 고객 이탈 예측 주요 피처 및 중요도", page_icon="📊", layout="wide")
 
 # 사용자 정의 CSS
 st.markdown("""
@@ -70,10 +71,35 @@ html, body, [data-testid="stAppViewContainer"] {
     color: #dddddd;
     line-height: 1.4;
 }
+
+/* 그래프 타이틀 */
+.title {
+    text-align: center;
+    font-size: 48px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-top: 60px;
+    margin-bottom: 0px;
+}
+.subtitle {
+    text-align: center;
+    font-size: 20px;
+    color: #1DB954;
+    margin-bottom: 40px;
+}
+
+/* 푸터 */
+.footer {
+    text-align: center;
+    font-size: 14px;
+    color: #888888;
+    margin-top: 40px;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# 상단 타이틀
+# -------------------------------
+# 상단 타이틀 및 설명
 st.markdown('<div class="key-features">Key Features</div>', unsafe_allow_html=True)
 st.markdown("""
 <div class="title-line">
@@ -83,7 +109,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 st.markdown('<div class="subtext">고객의 행동 패턴을 분석하여 이탈 가능성을 예측하는 핵심 지표들</div>', unsafe_allow_html=True)
 
-# 1행 6열 박스 구성
+# -------------------------------
+# 주요 피처 박스 (1행 6열)
 cols = st.columns(6)
 features = [
     {"icon": "🎫", "title": "구독 타입", "desc": "무료/프리미엄/가족/스튜던트"},
@@ -104,6 +131,37 @@ for col, f in zip(cols, features):
         </div>
         """, unsafe_allow_html=True)
 
+# -------------------------------
+# 피처 중요도 그래프
+st.markdown('<div class="title">피처 중요도</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">ML/DL 기반 고객 이탈 예측 프로젝트</div>', unsafe_allow_html=True)
+
+# 피처 중요도 데이터
+features_importance = ["구독 타입", "오프라인 재생시간", "광고 청취시간", "음악 재생시간", "나라", "만족도 지수"]
+importance = [95, 88, 82, 75, 68, 55]
+
+# 막대 그래프 생성
+fig = go.Figure(go.Bar(
+    x=features_importance,
+    y=importance,
+    marker_color='#1DB954',
+    text=[f"{v}%" for v in importance],
+    textposition="outside"
+))
+fig.update_layout(
+    plot_bgcolor="#000000",
+    paper_bgcolor="#000000",
+    font=dict(color="#ffffff"),
+    xaxis=dict(title="피처", tickfont=dict(color="#ffffff")),
+    yaxis=dict(title="중요도 (%)", tickfont=dict(color="#ffffff")),
+    margin=dict(t=40, b=40, l=40, r=40),
+    height=500
+)
+
+# 그래프 출력
+st.plotly_chart(fig, use_container_width=True)
+
+# -------------------------------
 # 푸터
 st.markdown("---")
-st.caption("© 2025 Spotify Churn Prediction Project")
+st.markdown('<div class="footer">Spotify Churn Prediction<br>© 2025 Customer Churn Prediction Project</div>', unsafe_allow_html=True)
