@@ -27,13 +27,31 @@
 
 ---
 
-## 3. 모델 학습 결과 및 비교
+---
+
+## 3. 모델 학습 구성 및 결과
+데이터 불균형 문제를 해결하기 위해 모든 모델에 별도의 가중치 설정이나 데이터 증강 기법을 적용했으며, 최적의 성능을 위해 하이퍼파라미터 튜닝을 진행했다.
+
+### 3.1 모델 별 주요 하이퍼파라미터 (Hyperparameters)
+각 모델은 `RandomizedSearchCV` 및 실험을 통해 도출된 최적의 파라미터로 설정되었다.
+
+| 모델 (Algorithm) | 핵심 파라미터 (Key Parameters) | 불균형 처리 (class_weight) |
+| :--- | :--- | :--- |
+| **Random Forest** | `n_estimators`: 300, 500 / `max_depth`: 10, 20 | `balanced_subsample` |
+| **XGBoost** | `n_estimators`: 500, 1000 / `learning_rate`: 0.05 | `scale_pos_weight=2.0` |
+| **LightGBM** | `n_estimators`: 500, 1000 / `learning_rate`: 0.05 | `scale_pos_weight=2.0` |
+| **CatBoost** | `iterations`: 500, 1000 / `learning_rate`: 0.05 | `auto_class_weights='SqrtBalanced'` |
+| **Deep Learning (DNN)** | `Adam(lr=0.0005)`, `Batch=64`, `SiLU`, `LayerNorm` | `BorderlineSMOTE` (Training only) |
+
+### 3.2 모델 성능 비교 결과
 다양한 머신러닝 및 딥러닝 알고리즘을 테스트한 결과, **Random Forest**가 가장 우수한 F1-Score를 기록하여 최종 모델로 선정되었다.
+
+![모델 성능 비교](images/model_performance_bar.png)
 
 | 모델명 | Accuracy | **F1-Score** | Best Threshold | 비고 |
 | :--- | :--- | :--- | :--- | :--- |
 | **Random Forest** | $0.8115$ | **$0.7437$** | **$0.53$** | **최종 선정 모델** |
-| Deep Learning (DNN) | $0.8165$ | $0.7425$ | $0.52$ | 대조군 모델 (비교용) |
+| Deep Learning (DNN) | $0.7980$ | $0.7383$ | $0.59$ | 대조군 모델 (High Recall: 0.896) |
 | LightGBM | $0.8050$ | $0.7202$ | - | - |
 | XGBoost | $0.8005$ | $0.7176$ | - | - |
 | CatBoost | $0.8070$ | $0.7162$ | - | - |
@@ -50,25 +68,31 @@
 
 | 혼동 행렬 (Confusion Matrix) | ROC 곡선 (ROC Curve) |
 | :---: | :---: |
-| ![RF 혼동 행렬](images/rf_confusion_matrix.png) | ![RF ROC 곡선](images/rf_roc.png) |
+| ![RF 혼동 행렬](images/ml_cm.png) | ![RF ROC 곡선](images/ml_roc.png) |
 
 ### 4.2 Deep Learning (DNN)
-- **비교 분석**: Swish 활성화 함수와 5계층 신경망을 사용하여 복잡한 비선형 패턴을 학습했다. 전체 정확도(Accuracy)는 가장 높았으나, F1-Score에서 RF에 근소하게 밀렸다.
+- **구조적 특징**:
+  - **Architecture**: [512 -> 256 -> 128 -> 64 -> 32 -> 1]의 5계층 깊은 신경망 구조.
+  - **Regularization**: 층마다 `LayerNorm`과 `Dropout(0.2~0.4)`을 적용하여 과적합을 강력히 억제함.
+  - **Activation**: `SiLU` 함수를 사용하여 ReLU보다 부드러운 그래디언트 흐름 유도.
+- **성능 분석**: 전체 정확도(Accuracy)는 가장 높았으나, F1-Score에서 RF에 근소하게 밀렸다. 하지만 재현율은 가장 높아 잠재적 이탈자를 놓치지 않는 특성을 보였다.
 - **성능 시각화**:
 
 | 혼동 행렬 (Confusion Matrix) | ROC 곡선 (ROC Curve) |
 | :---: | :---: |
-| ![DNN 혼동 행렬](images/dnn_confusion_matrix.png) | ![DNN ROC 곡선](images/dnn_roc.png) |
+| ![DNN 혼동 행렬](images/dl_cm.png) | ![DNN ROC 곡선](images/dl_roc.png) |
 
 ---
 
 ## 5. 특성 기여도 분석 (Feature Importance)
-두 모델이 공통적으로 중요하게 판단한 변수를 분석하여 비즈니스 인사이트를 도출했다.
+특성 중요도 분석을 통해 비즈니스 인사이트를 도출했다.
 
-![특성 중요도 비교](images/importance_comparison_percentage.png)
+| Random Forest Feature Importance | Deep Learning Feature Importance |
+| :---: | :---: |
+| ![RF 특성 중요도](images/ml_importance.png) | ![DL 특성 중요도](images/dl_importance.png) |
 
 - **핵심 인사이트**:
-  1. **`ad_burden` (기여도 약 35~40%)**: 두 모델 모두 **'광고 부담도'** 를 이탈의 가장 결정적인 요인으로 지목했다. 광고 노출 빈도가 사용자 경험을 해치고 있음을 데이터로 증명했다.
+  1. **`ad_burden` (광고 부담도)**: 두 모델 모두에서 이탈의 가장 결정적인 요인으로 지목되었다. 광고 노출 빈도가 사용자 경험을 해치고 있음을 데이터로 증명했다.
   2. **`satisfaction_score`**: 직접 설계한 **'만족도 지수'** 가 상위권 변수로 동작했다. 이는 스킵률과 재생 수를 결합한 지표가 유효함을 입증했다.
   3. **`listening_time`**: 단순 청취 시간보다는 광고와의 비율(Burden)이나 곡당 길이 패턴이 더 중요한 변수로 작용했다.
 
@@ -78,7 +102,7 @@
 
 ### ✅ 최종 결론
 - **Random Forest 모델 채택**: F1-Score **0.7437**로 이탈 예측 성능이 가장 우수하며, 특성 중요도를 통한 비즈니스 설명력이 뛰어남을 확인했다.
-- **가설 검증 완료**: 직접 설계한 `ad_burden` 등의 파생 변수가 모델 성능에 결정적인 기여(30% 이상)를 함을 확인했다.
+- **가설 검증 완료**: 직접 설계한 `ad_burden` 등의 파생 변수가 모델 성능에 결정적인 기여를 함을 확인했다.
 
 ### 🚀 활용 계획
 1. **실시간 서비스 적용**: 최종 선정된 Random Forest 모델을 `app.py`에 탑재하여 실시간 이탈 확률 예측 서비스를 제공한다.
