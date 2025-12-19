@@ -65,10 +65,11 @@
 - **성능 시각화**:
   - **혼동 행렬**: 실제 이탈자를 얼마나 잘 잡아냈는지 확인했다.
   - **ROC 곡선**: 모델의 전반적인 분류 안정성을 확인했다.
+  - **PR 곡선**: 데이터 불균형 상황에서의 정밀도-재현율 트레이드오프를 확인했다.
 
-| 혼동 행렬 (Confusion Matrix) | ROC 곡선 (ROC Curve) |
-| :---: | :---: |
-| ![RF 혼동 행렬](images/ml_cm.png) | ![RF ROC 곡선](images/ml_roc.png) |
+| 혼동 행렬 (Confusion Matrix) | ROC 곡선 (ROC Curve) | PR 곡선 (Precision-Recall Curve) |
+| :---: | :---: | :---: |
+| ![RF 혼동 행렬](images/ml_cm.png) | ![RF ROC 곡선](images/ml_roc.png) | ![RF PR 곡선](images/ml_pr.png) |
 
 ### 4.2 Deep Learning (DNN)
 - **구조적 특징**:
@@ -78,9 +79,9 @@
 - **성능 분석**: 전체 정확도(Accuracy)는 가장 높았으나, F1-Score에서 RF에 근소하게 밀렸다. 하지만 재현율은 가장 높아 잠재적 이탈자를 놓치지 않는 특성을 보였다.
 - **성능 시각화**:
 
-| 혼동 행렬 (Confusion Matrix) | ROC 곡선 (ROC Curve) |
-| :---: | :---: |
-| ![DNN 혼동 행렬](images/dl_cm.png) | ![DNN ROC 곡선](images/dl_roc.png) |
+| 혼동 행렬 (Confusion Matrix) | ROC 곡선 (ROC Curve) | PR 곡선 (Precision-Recall Curve) |
+| :---: | :---: | :---: |
+| ![DNN 혼동 행렬](images/dl_cm.png) | ![DNN ROC 곡선](images/dl_roc.png) | ![DNN PR 곡선](images/dl_pr.png) |
 
 ---
 
