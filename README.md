@@ -22,7 +22,7 @@
 4.  **비즈니스 전략 가이드**: 예측된 위험도(안전/주의/위험)에 따른 구체적인 마케팅/서비스 개선 전략 제안
 
 ## 📂 데이터셋 설명 (Data Dictionary)
-이 데이터셋은 Spotify 사용자의 인구통계 정보, 이용 행태, 구독 정보 등을 포함하며, **이탈 여부(`is_churned`)**를 예측하는 것이 핵심 목표입니다.
+이 데이터셋은 Spotify 사용자의 인구통계 정보, 이용 행태, 구독 정보 등을 포함하며, **이탈 여부(`is_churned`)** 를 예측하는 것이 핵심 목표입니다.
 
 | 구분 | 컬럼명 (Feature) | 설명 | 데이터 타입 | 비고 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -125,7 +125,7 @@ Generated 데이터는 합성 과정 특성상 **비현실 값(음수)** 이 일
 ### 3.1 Random Forest (Final Model)
 - **선정 사유**: Bagging 앙상블을 통한 안정적인 예측력 및 최고 F1-Score 달성.
 - **성능 시각화**:
-| 혼동 행렬 (Confusion Matrix) | ROC 곡선 | PR 곡선 |
+| 혼동 행렬 (Confusion Matrix) | ROC 곡선 (ROC Curve) | PR 곡선 (PR Curve) |
 | :---: | :---: | :---: |
 | ![RF 혼동 행렬](02_training_report/images/ml_cm.png) | ![RF ROC 곡선](02_training_report/images/ml_roc.png) | ![RF PR 곡선](02_training_report/images/ml_pr.png) |
 
@@ -146,7 +146,7 @@ Generated 데이터는 합성 과정 특성상 **비현실 값(음수)** 이 일
 ## 🛠 기술 스택 (Tech Stack)
 * **Language**: Python 3.9+
 * **Web Framework**: Streamlit
-* **ML/DL**: Scikit-learn, XGBoost, TensorFlow (Keras)
+* **ML/DL**: Scikit-learn, XGBoost, Pytorch
 * **Sampling**: Imbalanced-learn (BorderlineSMOTE)
 * **Data Analysis**: Pandas, NumPy
 * **Visualization**: Plotly, Matplotlib, Seaborn
