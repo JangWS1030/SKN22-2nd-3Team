@@ -125,7 +125,8 @@ Generated 데이터는 합성 과정 특성상 **비현실 값(음수)** 이 일
 ### 3.1 Random Forest (Final Model)
 - **선정 사유**: Bagging 앙상블을 통한 안정적인 예측력 및 최고 F1-Score 달성.
 - **성능 시각화**:
-| 혼동 행렬 (Confusion Matrix) | ROC 곡선 | PR 곡선 |
+| 혼동 행렬 (Confusion Matrix) | ROC 곡선 (ROC Curve) | PR 곡선 (PR Curve) |
+| :---: | :---: | :---: |
 | ![RF 혼동 행렬](02_training_report/images/ml_cm.png) | ![RF ROC 곡선](02_training_report/images/ml_roc.png) | ![RF PR 곡선](02_training_report/images/ml_pr.png) |
 
 ### 3.2 Feature Importance (특성 중요도)
