@@ -10,9 +10,7 @@ st.set_page_config(page_title="모델 성능 비교", page_icon="📊", layout="
 def load_metrics():
     metrics_path = os.path.join(
         os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-        "notebooks",
-        "JangWansik",
-        "03_trained_model",
+        "data",
         "model_metrics.json",
     )
     try:
@@ -100,6 +98,8 @@ div[data-testid="stColumn"] div[data-testid="stButton"] > button:hover {
 # 3. 데이터 추출
 rf_metrics = metrics_data.get("RandomForest", {})
 dl_metrics = metrics_data.get("Deep Learning (DNN)", {})
+xgb_metrics = metrics_data.get("XGBoost", {})
+lgbm_metrics = metrics_data.get("LightGBM", {})
 
 # 4. 메인 콘텐츠 레이아웃
 left_col, right_col = st.columns([1, 1])
@@ -148,25 +148,25 @@ with right_col:
             "icon": "🌲",
             "title": "Random Forest",
             "desc": "다수의 결정 트리로부터 분류",
-            "score": f"{rf_metrics.get('Accuracy', 0.812)*100:.1f}%",
+            "score": f"{rf_metrics.get('Accuracy', 0.8115)*100:.1f}%",
         },
         {
             "icon": "🧠",
             "title": "Deep Learning",
             "desc": "TensorFlow 기반 DNN 모델",
-            "score": f"{dl_metrics.get('Accuracy', 0.813)*100:.1f}%",
+            "score": f"{dl_metrics.get('Accuracy', 0.798)*100:.1f}%",
         },
         {
             "icon": "⚡",
             "title": "XGBoost",
             "desc": "성능 최적화 부스팅 알고리즘",
-            "score": "80.5%",
+            "score": f"{xgb_metrics.get('Accuracy', 0.8005)*100:.1f}%",
         },
         {
-            "icon": "📈",
-            "title": "LSTM",
-            "desc": "시계열 데이터 패턴 학습",
-            "score": "79.8%",
+            "icon": "💡",
+            "title": "LightGBM",
+            "desc": "대용량 데이터 고속 학습",
+            "score": f"{lgbm_metrics.get('Accuracy', 0.805)*100:.1f}%",
         },
     ]
 
